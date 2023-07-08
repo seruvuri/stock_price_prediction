@@ -1,7 +1,11 @@
 import os,sys
+import numpy as np
 from src.logger import logging
 from src.exception import CustomException
 from dataclasses import dataclass
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import MinMaxScaler
 
 @dataclass
 class Datatransformationconfig:
@@ -25,6 +29,36 @@ class Datatransformation:
             else:
                 logging.info('No null values in dataset ')
 
+            ##choosing column for prediction
+            logging.info("choosing column from dataset for further analysis")
+            pred_df=stock_dataframe['close']
+            plt.plot(pred_df)
+            logging.info('Distribution of "close" category over years graph representation window will popup')
+            plt.show()
 
+            logging.info('Data Scaling initiated')
+            #Data scaling using MinMaxScaler
+
+            scaler=MinMaxScaler(feature_range=(0,1))
+            logging.info('LSTM are sensitive to the scale of data. So we apply "MinMax scaler"')
+            pred_df=scaler.fit_transform(np.array(pred_df).reshape(-1,1))
+
+            #Splitting test and train
+
+            logging.info('Splitting data to test and train in ratio "65%" and "35%"')
+            training_size=int(len(pred_df)*0.65)
+            test_size=len(pred_df)-training_size
+            train_data,test_data=pred_df[0:training_size],pred_df[training_size:len(pred_df),:1]
+
+            logging.info('train and test data split is done with size with "train data length":{train_len} and "test data length":{test_len}'.format(train_len=len(train_data),test_len=len(test_data)))
+
+            return(train_data,
+                    test_data)
         except Exception as e:
-            raise CustomException(e,sys) 
+            raise CustomException(e,sys)
+        
+        
+            
+            
+
+         

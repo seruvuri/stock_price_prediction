@@ -28,7 +28,7 @@ class DataIngestion:
             stock_df=pd.json_normalize(json_dataset)
             logging.info('converted json data to pandas dataframe')
 
-            stock_df.to_csv(self.ingestion_config.raw_data_file_path)
+            stock_df.to_csv(self.ingestion_config.raw_data_file_path,header=True,index=False)
             logging.info('saving raw data from api to "{file_path_name}" path'.format(' ',file_path_name=self.ingestion_config.raw_data_file_path))
             
             return stock_df
@@ -42,4 +42,4 @@ if __name__=="__main__":
 
     #combining data transformation
     transformation_obj=Datatransformation()
-    obj=transformation_obj.initiate_data_transformation(stock_dataframe=stock_dataset)
+    train_dataset,test_dataset=transformation_obj.initiate_data_transformation(stock_dataframe=stock_dataset)
