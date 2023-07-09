@@ -18,6 +18,7 @@ class Datatransformation:
     
     def initiate_data_transformation(self,stock_dataframe):
         try:
+            global train_data,test_data
             logging.info('data transformation initiated')
             
             # NUll check 
@@ -33,8 +34,8 @@ class Datatransformation:
             logging.info("choosing column from dataset for further analysis")
             pred_df=stock_dataframe['close']
             plt.plot(pred_df)
-            logging.info('Distribution of "close" category over years graph representation window will popup')
-            plt.show()
+            #logging.info('Distribution of "close" category over years graph representation window will popup')
+            #plt.show()
 
             logging.info('Data Scaling initiated')
             #Data scaling using MinMaxScaler
@@ -59,6 +60,17 @@ class Datatransformation:
         
         
             
-            
+    def create_dataset(self,dataset,time_step=1):
+        logging.info('creating dataset for model')
+        dataX,dataY=[],[]
+        for i in range(len(dataset)-time_step-1):
+            a=dataset[i:(i+time_step),0]
+            dataX.append(a)
+            dataY.append(dataset[i+time_step,0])
+        
+        return np.array(dataX),np.array(dataY)
+    
+
+    
 
          

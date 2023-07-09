@@ -5,4 +5,5 @@ matplotlib
 numpy
 scikit-learn
 requests
+tensorflow==2.12.*
 -e .
