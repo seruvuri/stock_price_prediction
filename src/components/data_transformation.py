@@ -19,7 +19,8 @@ class Datatransformation:
     def initiate_data_transformation(self,stock_dataframe):
         try:
             global train_data,test_data
-            logging.info('data transformation initiated')
+            logging.info('>>>>>>>>>>>>>>>>Data transformation initiated<<<<<<<<<<<<<<<<<')
+            Close_stock=stock_dataframe['close']
             
             # NUll check 
             logging.info('checking null values in dataset')
@@ -31,8 +32,9 @@ class Datatransformation:
                 logging.info('No null values in dataset ')
 
             ##choosing column for prediction
-            logging.info("choosing column from dataset for further analysis")
+            
             pred_df=stock_dataframe['close']
+            logging.info("choosing column from dataset for further analysis with dataset length {prediction_column}".format(prediction_column=len(pred_df)))
             plt.plot(pred_df)
             #logging.info('Distribution of "close" category over years graph representation window will popup')
             #plt.show()
@@ -52,9 +54,9 @@ class Datatransformation:
             train_data,test_data=pred_df[0:training_size],pred_df[training_size:len(pred_df),:1]
 
             logging.info('train and test data split is done with size with "train data length":{train_len} and "test data length":{test_len}'.format(train_len=len(train_data),test_len=len(test_data)))
-
+            
             return(train_data,
-                    test_data)
+                    test_data,Close_stock)
         except Exception as e:
             raise CustomException(e,sys)
         

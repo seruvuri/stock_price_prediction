@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from src.utils import *
 from src.components.data_transformation import *
 from src.components.model_trainer import *
+from src.pipeline.predict_pipeline import *
 
 @dataclass
 class DataingestionConfig:
@@ -21,7 +22,7 @@ class DataIngestion:
 
     def initiate_data_ingestion(self):
         try:
-            logging.info('data ingestion initiated')
+            logging.info('>>>>>>>>>>>>>>>>Data ingestion initiated<<<<<<<<<<<<<<<<<<<')
             json_dataset=api_data_extraction(ticker_name='aapl',startDate='2019-01-02',resampleFreq='1hour',token='a159a3a83b1754845d7353fbec1c9f2902d4a8e1')
             
             
@@ -43,12 +44,16 @@ if __name__=="__main__":
 
     #combining data transformation
     transformation_obj=Datatransformation()
-    train_dataset,test_dataset=transformation_obj.initiate_data_transformation(stock_dataframe=stock_dataset)
-    time_step=100
+    train_dataset,test_dataset,close_df=transformation_obj.initiate_data_transformation(stock_dataframe=stock_dataset)
+    time_step=150
     X_train,y_train=transformation_obj.create_dataset(dataset=train_dataset,time_step=time_step)
     X_test,y_test=transformation_obj.create_dataset(dataset=test_dataset,time_step=time_step)
     logging.info('created dataset for "LSTM" model input with "X_train" size:{X_train_size},"y_train" size:{y_train_size},"X_test" size:{X_test_size},"y_test" size:{y_test_size}'.format(X_train_size=X_train.shape,y_train_size=y_train.shape,X_test_size=X_test.shape,y_test_size=y_test.shape))
 
-
+    #model trainer
     model_trainer_obj=ModelTrainer()
-    obj=model_trainer_obj.initiate_model_trainer(X_train=X_train,X_test=X_test)
+    Model=model_trainer_obj.initiate_model_trainer(X_train=X_train,X_test=X_test,y_train=y_train,y_test=y_test)
+
+    #prediction pipeline
+    Predict_pipline_obj=Predictpipeline()
+    obj=Predict_pipline_obj.predict(model=Model,X_train=X_train,X_test=X_test,y_train=y_train,y_test=y_test,test_data=test_dataset,prediction_column=close_df)

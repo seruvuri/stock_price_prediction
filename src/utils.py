@@ -2,6 +2,7 @@ import os,sys
 from src.exception import CustomException
 from src.logger import logging
 import requests
+import dill
 
 
 '''
@@ -26,5 +27,16 @@ def api_data_extraction(ticker_name,startDate,resampleFreq,token):
             return dataset
         elif status in [400,500,401,502,404]:
             logging.info('unable to establish connection. error code {status_code}'.format(status_code=status))
+    except Exception as e:
+        raise CustomException(e,sys)
+
+def save_obj(file_path, obj):
+    try:
+        dir_path=os.path.dirname(file_path)
+
+        os.makedirs(dir_path,exist_ok=True)
+
+        with open(file_path,"wb") as file_obj:
+            dill.dump(obj, file_obj)
     except Exception as e:
         raise CustomException(e,sys)

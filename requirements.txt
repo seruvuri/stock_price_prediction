@@ -6,4 +6,5 @@ numpy
 scikit-learn
 requests
 tensorflow==2.12.*
+dill
 -e .
