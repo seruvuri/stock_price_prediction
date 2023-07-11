@@ -20,7 +20,7 @@ class Datatransformation:
         try:
             global train_data,test_data
             logging.info('>>>>>>>>>>>>>>>>Data transformation initiated<<<<<<<<<<<<<<<<<')
-            Close_stock=stock_dataframe['close']
+            #Close_stock=stock_dataframe['close']
             
             # NUll check 
             logging.info('checking null values in dataset')
@@ -33,11 +33,11 @@ class Datatransformation:
 
             ##choosing column for prediction
             
-            pred_df=stock_dataframe['close']
+            pred_df=stock_dataframe.reset_index()['close']
             logging.info("choosing column from dataset for further analysis with dataset length {prediction_column}".format(prediction_column=len(pred_df)))
             plt.plot(pred_df)
             #logging.info('Distribution of "close" category over years graph representation window will popup')
-            #plt.show()
+            plt.show()
 
             logging.info('Data Scaling initiated')
             #Data scaling using MinMaxScaler
@@ -51,12 +51,12 @@ class Datatransformation:
             logging.info('Splitting data to test and train in ratio "65%" and "35%"')
             training_size=int(len(pred_df)*0.65)
             test_size=len(pred_df)-training_size
-            train_data,test_data=pred_df[0:training_size],pred_df[training_size:len(pred_df),:1]
+            train_data,test_data=pred_df[0:training_size,:],pred_df[training_size:len(pred_df),:1]
 
             logging.info('train and test data split is done with size with "train data length":{train_len} and "test data length":{test_len}'.format(train_len=len(train_data),test_len=len(test_data)))
             
             return(train_data,
-                    test_data,Close_stock)
+                    test_data,pred_df,scaler)
         except Exception as e:
             raise CustomException(e,sys)
         
