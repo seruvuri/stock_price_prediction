@@ -6,5 +6,6 @@ numpy
 scikit-learn
 requests
 tensorflow==2.12.*
+hydra-core
 dill
 -e .

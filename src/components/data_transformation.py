@@ -3,14 +3,17 @@ import numpy as np
 from src.logger import logging
 from src.exception import CustomException
 from dataclasses import dataclass
+import tkinter
+import matplotlib
 import matplotlib.pyplot as plt
-
+matplotlib.use('TkAgg')
 from sklearn.preprocessing import MinMaxScaler
 
 @dataclass
 class Datatransformationconfig:
     train_data_file_path=os.path.join('artifacts','train.csv')
     test_data_file_path=os.path.join('artifacts','test.csv')
+    distribution_plot_file_path=os.path.join('Plots','Data_Distribution_graph.jpg')
 
 class Datatransformation:
     def __init__(self):
@@ -35,9 +38,13 @@ class Datatransformation:
             
             pred_df=stock_dataframe.reset_index()['close']
             logging.info("choosing column from dataset for further analysis with dataset length {prediction_column}".format(prediction_column=len(pred_df)))
+            ''''
             plt.plot(pred_df)
-            #logging.info('Distribution of "close" category over years graph representation window will popup')
+            logging.info('Distribution of "close" category over years graph representation available in path {dist_plot}'.format(dist_plot=self.transformationconfig.distribution_plot_file_path))
+            plt.title('Distribution of "close" column')
             plt.show()
+            plt.savefig(self.transformationconfig.distribution_plot_file_path)
+            '''
 
             logging.info('Data Scaling initiated')
             #Data scaling using MinMaxScaler

@@ -16,12 +16,13 @@ from src.utils import *
 @dataclass
 class ModelTrainerConfig:
     model_pickle_file_path=os.path.join('artifacts','model.pkl')
+    prediction_plot_file_path=os.path.join('Plots','prediction_plot.jpg')
 
 class ModelTrainer:
     def __init__(self):
         self.modeltrainerconfig=ModelTrainerConfig()
 
-    def initiate_model_trainer(self,X_train,X_test,y_train,y_test,test_data,minmaxscaler,prediction_column):
+    def initiate_model_trainer(self,X_train,X_test,y_train,y_test,test_data,minmaxscaler):
         try:
             logging.info('>>>>>>>>>>>>>>Model trainer initiated<<<<<<<<<<<<<<<<<<<<<')
             logging.info('Reshaping input to be [samples, time steps, features] which is required for LSTM')
@@ -42,7 +43,7 @@ class ModelTrainer:
 
             
             logging.info('Training LSTM model')
-            model.fit(X_train,y_train,validation_data=(X_test,y_test),epochs=2,batch_size=64,verbose=1)
+            model.fit(X_train,y_train,validation_data=(X_test,y_test),epochs=100,batch_size=64,verbose=1)
             
             
             logging.info('Predicting for X_train and X_test')
@@ -59,6 +60,7 @@ class ModelTrainer:
             logging.info('RMSE of "train data prediction":{train_rmse} and "test data prediction":{test_rmse}'.format(train_rmse=train_RMSE,test_rmse=test_RMSE))
             
             #considering 150 previous days for next 100 days predictions
+            global previous_days
             previous_days=150
             restofdays_in_dataset=len(test_data)-previous_days
             x_input=test_data[restofdays_in_dataset:].reshape(1,-1)
@@ -73,11 +75,11 @@ class ModelTrainer:
 
 
 
-
+            global prediction_days
             prediction_days=100
-            previous_days=150
             
-
+            
+            global lst_output
             lst_output=[]
             n_steps=150
             i=0
@@ -109,19 +111,27 @@ class ModelTrainer:
             
             day_new=np.arange(1,len(temp_input))
             day_pred=np.arange(len(temp_input),len(temp_input)+prediction_days)
-
-            df=prediction_column.tolist()
-            df.extend(lst_output)
-
-        
-            logging.info('plotting graph for prediction of "{prediction_days}" days'.format(prediction_days=previous_days))
-            prediction_graph=df[len(prediction_column)-previous_days:]
-            plt.plot(prediction_graph)
-            plt.show()
             
-            
-            #return model
+
         except Exception as e:
             raise CustomException(e,sys)
+        
+    def pred_plot(self,prediction_column):
+        try:
+            logging.info('plotting graph for prediction of "{prediction_days}" days'.format(prediction_days=prediction_days))
+
+            
+            df=prediction_column.tolist()
+            df.extend(lst_output)
+            prediction_graph=df[len(prediction_column)-previous_days:]
+            plt.plot(prediction_graph)
+            #plt.show(block=False)
+            
+            plt.title('{Days} days of prediction'.format(Days=prediction_days))
+            #plt.show()
+            plt.savefig(self.modeltrainerconfig.prediction_plot_file_path)
+            print('prediciton plot available in path {pred_plot}'.format('',pred_plot=self.modeltrainerconfig.prediction_plot_file_path))
+        except Exception as e:
+            return CustomException(e,sys)
         
         
