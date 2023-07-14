@@ -56,3 +56,28 @@ API parameter's description:
 >Splitting data into test and train
 
 >Creating dataset for LSTM model input
+
+## Model Training
+
+Traing LSTM model with 100 epochs by considering previous 150 days for predicting next 100 days
+
+## Application Workflow
+
+ * Run **data_ingestion.py** file in src folder to start the application
+ * ![image](https://github.com/seruvuri/stock_price_prediction/assets/109864276/ba3104fb-2877-428e-ad8a-3878d000362d)
+
+   Program will take input ticker name as mentioned in above screenshot from user to predict next 100 days.
+   
+   After running data_ingestion.py file , we have to enter the ticker name for which we need predictions .
+
+  * Model training will start with 100 epochs and will give file plot of stock prediction
+
+   ![image](https://github.com/seruvuri/stock_price_prediction/assets/109864276/1e5b7c2f-96c0-4e5e-901a-ea21b0b52f25)
+
+  * The prediction Graph will be available in folder **Plots**
+
+  
+  ![image](https://github.com/seruvuri/stock_price_prediction/assets/109864276/6f35168b-80f9-4c56-a6e9-4c3cdce98d69)
+
+
+  
